@@ -80,7 +80,7 @@ cd Kinetic
 Open
 
 ```
-Kinetic.html
+https://programwithasim.github.io/Kinetic/kinetic.html
 ```
 
 or run using **Live Server** in Visual Studio Code.

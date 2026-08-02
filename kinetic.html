@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinetic - Love the songs!</title>
+<link rel="stylesheet" href="kineticStyles.css">
+<link rel="icon" href="KineticLogo.png" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body data-theme="dark">
+
+<!-- Loading Screen -->
+<div id="loadingScreen">
+    <div class="loaderCore">
+        <img src="KineticLogo.png" alt="Kinetic">
+        <div class="loaderRing"></div>
+    </div>
+    <p class="loaderWord">KINETIC</p>
+    <div class="loaderBar"><span id="loaderProgress"></span></div>
+</div>
+
+<!-- Ambient animated background -->
+<div class="bgFX" id="bgFX" aria-hidden="true"></div>
+
+<nav>
+    <ul>
+        <li class="brand">
+            <img src="KineticLogo.png" alt="Logo">
+            Kinetic
+        </li>
+        <li class="navLink active" data-tab="library">Home</li>
+        <li class="navLink" data-tab="discover">Explore</li>
+        <li class="navLink" data-tab="playlists">Playlists</li>
+        <li class="navLink" data-tab="liked">Liked</li>
+        <li class="navLink" data-tab="recent">History</li>
+        <li class="navLink" data-tab="top">Top</li>
+    </ul>
+    <div class="searchWrap">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Search songs or artists...">
+        <i id="clearSearch" class="fa-solid fa-xmark" style="display:none"></i>
+    </div>
+    <div class="navIcons">
+        <i id="themeBtn" class="fa-solid fa-moon navIcon" title="Toggle theme"></i>
+        <i id="queueBtn" class="fa-solid fa-list-ol navIcon" title="Queue"></i>
+        <i id="settingsBtn" class="fa-solid fa-circle-info navIcon" title="About Kinetic"></i>
+    </div>
+</nav>
+
+<h1 class="heading" id="pageHeading">Welcome to Kinetic - Love the songs!</h1>
+
+<div class="main">
+
+    <!-- LIBRARY -->
+    <div class="songList" id="librarySection">
+        <div class="listHeader">
+            <h1>My Library</h1>
+            <span class="listCount" id="libraryCount"></span>
+        </div>
+        <p class="hintText" id="libraryHint">Includes ~400 extra tracks from the Audius open catalog — Indian genres 🇮🇳 and global trending genres 🌐 — loading in the background.</p>
+        <div id="libraryList"></div>
+        <p class="emptyState" id="libraryEmpty" style="display:none">No songs match "<span id="libraryEmptyQuery"></span>".</p>
+    </div>
+
+    <!-- DISCOVER -->
+    <div class="songList" id="discoverSection" style="display:none">
+        <div class="listHeader">
+            <h1>Discover</h1>
+            <span class="listCount" id="discoverCount"></span>
+        </div>
+        <p class="hintText" id="discoverHint">Powered by the Audius open catalog &mdash; search any artist or track, or browse by country below.</p>
+        <div class="countryChips" id="countryChips">
+            <button class="countryChip active" data-country="all"><i class="fa-solid fa-globe"></i> All</button>
+            <button class="countryChip" data-country="india">🇮🇳 Indian</button>
+            <button class="countryChip" data-country="usa">🇺🇸 USA</button>
+            <button class="countryChip" data-country="france">🇫🇷 French</button>
+            <button class="countryChip" data-country="japan">🇯🇵 Japanese</button>
+            <button class="countryChip" data-country="korea">🇰🇷 South Korean</button>
+        </div>
+        <div id="discoverList"></div>
+        <p class="emptyState" id="discoverEmpty">Type a song or artist above to discover new music.</p>
+        <div class="loader" id="discoverLoader" style="display:none"><i class="fa-solid fa-circle-notch fa-spin"></i> Searching Audius...</div>
+    </div>
+
+    <!-- PLAYLISTS -->
+    <div class="songList" id="playlistsSection" style="display:none">
+        <div class="listHeader">
+            <h1 id="playlistsTitle">Playlists</h1>
+            <button class="pillBtn" id="newPlaylistBtn"><i class="fa-solid fa-plus"></i> New playlist</button>
+        </div>
+        <div id="playlistGrid" class="playlistGrid"></div>
+        <div id="playlistDetail" style="display:none">
+            <button class="backBtn" id="backToPlaylists"><i class="fa-solid fa-arrow-left"></i> All playlists</button>
+            <div id="playlistDetailList"></div>
+            <p class="emptyState" id="playlistDetailEmpty" style="display:none">No songs yet. Use the <i class="fa-solid fa-ellipsis-vertical"></i> menu on any song to add one.</p>
+        </div>
+    </div>
+
+    <!-- LIKED -->
+    <div class="songList" id="likedSection" style="display:none">
+        <div class="listHeader">
+            <h1><i class="fa-solid fa-heart" style="color:var(--accent2)"></i> Liked Songs</h1>
+            <span class="listCount" id="likedCount"></span>
+        </div>
+        <div id="likedList"></div>
+        <p class="emptyState" id="likedEmpty" style="display:none">Tap the heart on any song to save it here.</p>
+    </div>
+
+    <!-- RECENT -->
+    <div class="songList" id="recentSection" style="display:none">
+        <div class="listHeader">
+            <h1>Recently Played</h1>
+            <span class="listCount" id="recentCount"></span>
+        </div>
+        <div id="recentList"></div>
+        <p class="emptyState" id="recentEmpty" style="display:none">Nothing played yet — start a song and it'll show up here.</p>
+    </div>
+
+    <!-- MOST PLAYED -->
+    <div class="songList" id="topSection" style="display:none">
+        <div class="listHeader">
+            <h1>Most Played</h1>
+            <span class="listCount" id="topCount"></span>
+        </div>
+        <div id="topList"></div>
+        <p class="emptyState" id="topEmpty" style="display:none">Play counts will show up here as you listen.</p>
+
+        <div class="listHeader" style="margin-top:26px">
+            <h1 style="font-size:18px"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent)"></i> For You</h1>
+        </div>
+        <div id="recsList"></div>
+    </div>
+
+    <div class="songBanner">
+        <div class="nowPlayingCard" id="nowPlayingCard">
+            <div class="coverStage">
+                <div class="coverGlow" id="coverGlow"></div>
+                <img id="bannerCover" src="songcover.png" alt="Cover art" class="rotatingCover">
+            </div>
+            <canvas id="visualizer" width="260" height="46"></canvas>
+            <h2 id="bannerSongName">The Way I Loved You</h2>
+            <p id="bannerArtists">Taylor Swift</p>
+            <div class="bannerActions">
+                <i id="bannerLike" class="fa-regular fa-heart" title="Like"></i>
+                <i id="bannerAdd" class="fa-solid fa-square-plus" title="Add to playlist"></i>
+                <i id="bannerQueueAdd" class="fa-solid fa-list-ol" title="Add to queue"></i>
+                <i id="bannerExpand" class="fa-solid fa-up-right-and-down-left-from-center" title="Full screen player"></i>
+            </div>
+            <div class="artistInfo" id="artistInfo" style="display:none"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Song row action menu (shared, positioned dynamically) -->
+<div class="rowMenu" id="rowMenu">
+    <div class="rowMenuItem" id="menuLike"><i class="fa-regular fa-heart"></i> <span id="menuLikeLabel">Like</span></div>
+    <div class="rowMenuItem" id="menuQueue"><i class="fa-solid fa-list-ol"></i> Add to queue</div>
+    <div class="rowMenuItem" id="menuAddPlaylist"><i class="fa-solid fa-square-plus"></i> Add to playlist</div>
+    <div class="rowMenuSub" id="menuPlaylistSub"></div>
+    <div class="rowMenuItem danger" id="menuRemovePlaylist" style="display:none"><i class="fa-solid fa-trash"></i> Remove from this playlist</div>
+</div>
+
+<!-- Queue Panel -->
+<div class="sidePanel" id="queuePanel">
+    <div class="sidePanelHeader">
+        <h3><i class="fa-solid fa-list-ol"></i> Up Next</h3>
+        <i class="fa-solid fa-xmark" id="closeQueue"></i>
+    </div>
+    <p class="hintText" style="margin:0 20px 10px">Drag <i class="fa-solid fa-grip-lines"></i> to reorder. This queue drives Next/Previous.</p>
+    <div id="queueList" class="queueList"></div>
+</div>
+
+<!-- New Playlist / Add-to-playlist Modal -->
+<div class="modalOverlay" id="playlistModalOverlay">
+    <div class="modalBox">
+        <div class="modalHeader">
+            <h2><i class="fa-solid fa-layer-group"></i> <span id="playlistModalTitle">New Playlist</span></h2>
+            <i class="fa-solid fa-xmark" id="closePlaylistModal"></i>
+        </div>
+        <p class="modalSub">Give your playlist a name.</p>
+        <input type="text" id="playlistNameInput" class="textInput" placeholder="e.g. Late Night Drive" maxlength="40">
+        <button class="fullBtn" id="playlistModalConfirm">Create</button>
+    </div>
+</div>
+
+<!-- Info / Settings Panel -->
+<div class="modalOverlay" id="settingsOverlay">
+    <div class="modalBox">
+        <div class="modalHeader">
+            <h2><i class="fa-solid fa-sliders"></i> Kinetic Settings</h2>
+            <i class="fa-solid fa-xmark" id="closeSettings"></i>
+        </div>
+
+        <div class="infoStats" id="infoStats"></div>
+
+        <h3 class="infoHeading">Equalizer</h3>
+        <div class="eqPresets" id="eqPresets">
+            <button class="eqBtn active" data-preset="flat">Flat</button>
+            <button class="eqBtn" data-preset="pop">Pop</button>
+            <button class="eqBtn" data-preset="rock">Rock</button>
+            <button class="eqBtn" data-preset="jazz">Jazz</button>
+            <button class="eqBtn" data-preset="classical">Classical</button>
+            <button class="eqBtn" data-preset="bass">Bass Boost</button>
+        </div>
+        <p class="infoText" style="margin-top:8px">Works reliably on your local library songs. Streamed tracks (Discover, country browsing, the extended library) may go silent if you enable a preset and the streaming host doesn't allow audio processing — refresh the page if that happens.</p>
+
+        <h3 class="infoHeading">Sleep Timer</h3>
+        <div class="sleepRow">
+            <select id="sleepSelect">
+                <option value="0">Off</option>
+                <option value="10">10 minutes</option>
+                <option value="20">20 minutes</option>
+                <option value="30">30 minutes</option>
+                <option value="60">60 minutes</option>
+                <option value="end">End of current song</option>
+            </select>
+            <span id="sleepStatus" class="sleepStatus"></span>
+        </div>
+
+        <h3 class="infoHeading">Playback</h3>
+        <label class="switchRow">
+            <span>Crossfade between songs</span>
+            <input type="checkbox" id="crossfadeToggle">
+        </label>
+
+        <h3 class="infoHeading">How search works</h3>
+        <p class="infoText">Search checks your local library first. On the Discover tab, it also queries the live Audius catalog, broadening the query or showing trending tracks if nothing matches exactly.</p>
+
+        <h3 class="infoHeading">Keyboard shortcuts</h3>
+        <ul class="infoList">
+            <li><b>Space</b> &mdash; play / pause</li>
+            <li><b>&larr; / &rarr;</b> &mdash; seek back / forward 5s</li>
+            <li><b>Shift + &larr; / &rarr;</b> &mdash; previous / next track</li>
+            <li><b>&uarr; / &darr;</b> &mdash; volume up / down</li>
+            <li><b>M</b> &mdash; mute</li>
+            <li><b>L</b> &mdash; like current song</li>
+            <li><b>S</b> &mdash; shuffle</li>
+            <li><b>R</b> &mdash; cycle repeat mode</li>
+        </ul>
+
+        <h3 class="infoHeading">Data & privacy</h3>
+        <p class="infoText">Playlists, likes, history and settings are saved only in this browser's local storage. Discover results stream directly from Audius's public catalog.</p>
+    </div>
+</div>
+
+<!-- Full Screen Player -->
+<div class="fullPlayerOverlay" id="fullPlayerOverlay">
+    <div class="fullPlayerTop">
+        <i class="fa-solid fa-chevron-down" id="closeFullPlayer" title="Minimize"></i>
+        <span class="fullPlayerLabel">Now Playing</span>
+        <i class="fa-solid fa-ellipsis-vertical" id="fullPlayerMenuBtn" title="More"></i>
+    </div>
+    <div class="fullPlayerBody">
+        <div class="fullPlayerLeft">
+            <div class="coverStage fullCoverStage">
+                <div class="coverGlow" id="fullCoverGlow"></div>
+                <img id="fullCover" src="songcover.png" alt="Cover art" class="rotatingCover">
+            </div>
+            <h2 id="fullSongName">The Way I Loved You</h2>
+            <p id="fullArtists">Taylor Swift</p>
+            <div class="bannerActions">
+                <i id="fullLike" class="fa-regular fa-heart" title="Like"></i>
+                <i id="fullAdd" class="fa-solid fa-square-plus" title="Add to playlist"></i>
+                <i id="fullQueueAdd" class="fa-solid fa-list-ol" title="Add to queue"></i>
+                <i id="fullLyricsToggle" class="fa-solid fa-align-left" title="Toggle lyrics"></i>
+            </div>
+
+            <input type="range" id="fullProgressBar" min="0" max="100" value="0">
+            <div class="timeRow" style="width:100%">
+                <span id="fullCurrentTime">0:00</span>
+                <span id="fullDurationTime">0:00</span>
+            </div>
+
+            <div class="icons fullIcons">
+                <i id="fullShuffleBtn" class="fa-solid fa-shuffle" title="Shuffle"></i>
+                <i id="fullPrevious" class="fa-solid fa-2x fa-backward-step"></i>
+                <i id="fullMasterPlay" class="fa-solid fa-2x fa-circle-play"></i>
+                <i id="fullNext" class="fa-solid fa-2x fa-forward-step"></i>
+                <i id="fullRepeatBtn" class="fa-solid fa-repeat" title="Repeat"></i>
+            </div>
+
+            <div class="speedRow">
+                <i class="fa-solid fa-gauge-high"></i>
+                <input type="range" id="speedSlider" min="0.5" max="2" step="0.1" value="1">
+                <span id="speedLabel">1.0x</span>
+            </div>
+        </div>
+        <div class="fullPlayerRight" id="lyricsPanel">
+            <h3><i class="fa-solid fa-music"></i> Lyrics</h3>
+            <div class="lyricsBody" id="lyricsBody">
+                <p class="hintText">Lyrics will appear here once a song is playing.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="bottom">
+    <input type="range" id="myProgressBar" min="0" max="100" value="0">
+    <div class="timeRow">
+        <span id="currentTime">0:00</span>
+        <span id="durationTime">0:00</span>
+    </div>
+    <div class="playerRow">
+        <div class="songInfo">
+            <div class="miniCoverWrap">
+                <img src="songcover.png" id="miniCover" class="rotatingCover" alt="">
+                <img src="play.gif" width="18" id="gif" alt="Playing">
+            </div>
+            <div class="miniMeta">
+                <span id="masterSongName">The Way I Loved You</span>
+                <span id="masterArtistName" class="miniArtist">Taylor Swift</span>
+            </div>
+        </div>
+
+        <div class="icons">
+            <i id="shuffleBtn" class="fa-solid fa-shuffle" title="Shuffle"></i>
+            <i id="previous" class="fa-solid fa-2x fa-backward-step"></i>
+            <i id="masterPlay" class="fa-solid fa-2x fa-circle-play"></i>
+            <i id="next" class="fa-solid fa-2x fa-forward-step"></i>
+            <i id="repeatBtn" class="fa-solid fa-repeat" title="Repeat"></i>
+        </div>
+
+        <div class="volumeWrap">
+            <span id="speedBtn" class="speedBtn" title="Playback speed">1x</span>
+            <i id="miniExpand" class="fa-solid fa-up-right-and-down-left-from-center" title="Full screen player"></i>
+            <i id="muteBtn" class="fa-solid fa-volume-high"></i>
+            <input type="range" id="volumeBar" min="0" max="100" value="80">
+            <span id="volumePct" class="volumePct">80%</span>
+        </div>
+    </div>
+</div>
+
+<script src="KineticScript.js"></script>
+</body>
+</html>
